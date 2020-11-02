@@ -5,15 +5,19 @@
  */
 package chatserver;
 
+import chatprotocol.Client;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -25,6 +29,11 @@ import java.util.Properties;
 //NO TOCAR
 //**************************
 public class Database {
+    
+    ServerSocket server;
+    List<Worker> workers;
+    
+    
     private static Database Singleton;
     
     
@@ -82,5 +91,17 @@ public class Database {
         }
         return null;
     }
+    
+    public void remove(Client cl){
+        for(Worker wk:workers) {
+       
+            if(wk.client.equals(cl)){
+                workers.remove(wk);
+                try { wk.skt.close();} catch (IOException ex) {}
+                break;
+            }
+        }
+    }
+    
 
 }
