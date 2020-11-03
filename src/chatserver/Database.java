@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package chatserver;
 
 import chatprotocol.Client;
@@ -22,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-/**
+/*
  *
  * @author Porras
  */
@@ -31,21 +32,13 @@ import java.util.Properties;
 //NO TOCAR
 //**************************
 public class Database {
-    
-    ServerSocket server;
-    List<Worker> workers;
-    
-    
-    private static Database Singleton;
-    
-    
+    private static Database theInstance;
     public static Database instance(){
-        if (Singleton==null){ 
-            Singleton=new Database();
+        if (theInstance==null){ 
+            theInstance=new Database();
         }
-        return Singleton;
+        return theInstance;
     }
-    
     public static final String PROPERTIES_FILE_NAME="/db.properties";        
     Connection cnx;
     public Database(){
@@ -92,48 +85,5 @@ public class Database {
         } catch (SQLException ex) {
         }
         return null;
-    }
-    
-    
-    public void remove(Client cl){
-        for(Worker wk:workers) {
-       
-            if(wk.client.equals(cl)){
-                workers.remove(wk);
-                try { 
-                    wk.skt.close();
-                } 
-                catch (IOException ex) {}
-                break;
-            }
-        }
-    }
-    
-    public void deliver(String msg,Client cl){//cliente destino
-        for(Worker wk:workers) {
-       
-            if(wk.client.equals(cl)){
-                wk.deliver(msg);
-                break;
-            }
-        }
-    }
-    
-    public List<Client> getClients(){
-        List<Client> clients = Collections.synchronizedList(new ArrayList<Client>());
-        for (int i = 0; i < workers.size(); i++) {
-            clients.add(workers.get(i).client);
-        }
-        return clients;
-    }
-    
-    public void giveClients(List<Client> clients){
-        
-        for(Worker wk:workers) {
-            wk.giveClients(clients);
-          
-        }
-    }
-    
-
+    }    
 }

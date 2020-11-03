@@ -1,43 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package chatserver;
 
+
+import chatprotocol.Protocol;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import chatprotocol.IService;
+import chatprotocol.Client;
 import java.net.Socket;
-import chatprotocol.*;
-import java.io.IOException;
-import java.util.List;
 
-/**
- *
- * @author Porras
- */
 public class Worker {
-    
     Socket skt;
     ObjectInputStream in;
     ObjectOutputStream out;
-    Client client;
-    boolean continuar;
-    
-    
-    public Worker(Socket skt, ObjectInputStream in, ObjectOutputStream out, Client client) {
-        this.skt = skt;
-        this.in = in;
-        this.out = out;
-        this.client = client;
+    Client user;
+
+    public Worker(Socket skt, ObjectInputStream in, ObjectOutputStream out, Client user) {
+        this.skt=skt;
+        this.in=in;
+        this.out=out;
+        this.user=user;
     }
-    
-    public void stop(){
-        continuar = false;
-    }
-    
-    
-   public void start(){
+
+    boolean continuar;    
+    public void start(){
         try {
             System.out.println("Worker atendiendo peticiones...");
             Thread t = new Thread(new Runnable(){
@@ -50,39 +36,31 @@ public class Worker {
         } catch (Exception ex) {  
         }
     }
-   
-   public void listen(){
+    
+    public void stop(){
+        continuar=false;
+    }
+    
+    public void listen(){
         int method;
         while (continuar) {
             try {
                 method = in.readInt();
                 switch(method){
                 //case Protocol.LOGIN: done on accept
-                    case Protocol.LOGOUT:
-                        try {
-                            Service.getInstance().logout(client);
-
-                        } catch (Exception ex) {}
-                        stop();
-                    break;
-                        
-                    case Protocol.MSG:
-                         String message=null;
-                        try {
-                            message = (String)in.readObject();
-                            Service.getInstance().post_msg(client.getId() + ": " + message,client.getDestino());
-
-                        }
-                        catch (ClassNotFoundException ex) {}
-                    break;   
-                    
-                    case Protocol.REQ_USERS:
-                        try {
-                            Service.getInstance().giveClients();
-                        
-                        }
-                        catch (Exception e) {  }
-                    break;
+                case Protocol.LOGOUT:
+                    try {
+                        Service.instance().logout(user);
+                    } catch (Exception ex) {}
+                    stop();
+                    break;                 
+                case Protocol.MSG:
+                    String message=null;
+                    try {
+                        message = (String)in.readObject();
+                        Service.instance().post_msg(message,user.getDestino());
+                    } catch (ClassNotFoundException ex) {}
+                    break;                     
                 }
                 out.flush();
             } catch (IOException  ex) {
@@ -90,18 +68,7 @@ public class Worker {
             }                        
         }
     }
-        
-    public void giveClients(List<Client> clients){
-        try {
-            out.writeInt(Protocol.ON_USERS);
-            out.writeObject(clients);
-            out.flush();
-        } catch (Exception e) {
-        }
-        
-    }    
-        
-   
+    
     public void deliver(String message){
         try {
             out.writeInt(Protocol.DELIVER);
@@ -110,6 +77,4 @@ public class Worker {
         } 
         catch (IOException ex) {}
     }
-    
-    
 }

@@ -14,6 +14,7 @@ import java.sql.SQLException;
  *
  * @author Porras
  */
+
 public class ClientDao {
     
     //metodos basicos 

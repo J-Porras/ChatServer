@@ -15,7 +15,9 @@ public class ChatServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // probando
+       Server s = new Server();
+       s.run();
+               
     }
     
 }
