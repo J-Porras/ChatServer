@@ -17,6 +17,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -92,14 +94,44 @@ public class Database {
         return null;
     }
     
+    
     public void remove(Client cl){
         for(Worker wk:workers) {
        
             if(wk.client.equals(cl)){
                 workers.remove(wk);
-                try { wk.skt.close();} catch (IOException ex) {}
+                try { 
+                    wk.skt.close();
+                } 
+                catch (IOException ex) {}
                 break;
             }
+        }
+    }
+    
+    public void deliver(String msg,Client cl){//cliente destino
+        for(Worker wk:workers) {
+       
+            if(wk.client.equals(cl)){
+                wk.deliver(msg);
+                break;
+            }
+        }
+    }
+    
+    public List<Client> getClients(){
+        List<Client> clients = Collections.synchronizedList(new ArrayList<Client>());
+        for (int i = 0; i < workers.size(); i++) {
+            clients.add(workers.get(i).client);
+        }
+        return clients;
+    }
+    
+    public void giveClients(List<Client> clients){
+        
+        for(Worker wk:workers) {
+            wk.giveClients(clients);
+          
         }
     }
     

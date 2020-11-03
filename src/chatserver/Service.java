@@ -5,6 +5,7 @@
  */
 package chatserver;
 import chatprotocol.*;
+import java.util.List;
 
 /**
  *
@@ -14,7 +15,7 @@ public class Service implements IService{
     
     public static IService singleton;
     
-    private Database theserver;
+    private Database server;
     
     private ClientDao clientDao;
     
@@ -32,7 +33,7 @@ public class Service implements IService{
     }
     
     public void setServer(Database database){
-        theserver = database;
+        server = database;
     }
     
     //----Clientes---
@@ -51,12 +52,18 @@ public class Service implements IService{
 
     @Override
     public void logout(Client client) throws Exception {
-        
+        server.remove(client);
     }
 
     @Override
-    public void post_msg(String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void post_msg(String string,Client cl) {
+       server.deliver(string, cl);
+    }
+    
+    //retrieve clients
+    @Override
+    public void giveClients(){
+       server.giveClients(server.getClients());
     }
 
     

@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import chatprotocol.*;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -57,27 +58,57 @@ public class Worker {
                 method = in.readInt();
                 switch(method){
                 //case Protocol.LOGIN: done on accept
-                case Protocol.LOGOUT:
-                    try {
-                        Service.getInstance().logout(client);
-                   
-                    } catch (Exception ex) {}
-                    stop();
-                    break;                 
-                case Protocol.MSG:
-                    String message=null;
-                    try {
-                        message = (String)in.readObject();
-                        Service.getInstance().post_msg(client.getId() + ": " + message);
+                    case Protocol.LOGOUT:
+                        try {
+                            Service.getInstance().logout(client);
+
+                        } catch (Exception ex) {}
+                        stop();
+                    break;
                         
-                    } catch (ClassNotFoundException ex) {}
-                    break;                     
+                    case Protocol.MSG:
+                         String message=null;
+                        try {
+                            message = (String)in.readObject();
+                            Service.getInstance().post_msg(client.getId() + ": " + message,client.getDestino());
+
+                        }
+                        catch (ClassNotFoundException ex) {}
+                    break;   
+                    
+                    case Protocol.REQ_USERS:
+                        try {
+                            Service.getInstance().giveClients();
+                        
+                        }
+                        catch (Exception e) {  }
+                    break;
                 }
                 out.flush();
             } catch (IOException  ex) {
                 continuar = false;
             }                        
         }
+    }
+        
+    public void giveClients(List<Client> clients){
+        try {
+            out.writeInt(Protocol.ON_USERS);
+            out.writeObject(clients);
+            out.flush();
+        } catch (Exception e) {
+        }
+        
+    }    
+        
+   
+    public void deliver(String message){
+        try {
+            out.writeInt(Protocol.DELIVER);
+            out.writeObject(message);
+            out.flush();
+        } 
+        catch (IOException ex) {}
     }
     
     
