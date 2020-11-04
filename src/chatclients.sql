@@ -18,4 +18,4 @@ CREATE TABLE IF NOT EXISTS chatclients.client (
 
 
 INSERT INTO client(id_client,nombre,password,nickname,isonline)
-VALUES(111,'test','test','test',1);
+VALUES('111','test','test','test',true);
