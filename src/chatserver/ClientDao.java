@@ -38,14 +38,18 @@ public class ClientDao {
     }
     
     public Client read(String id) throws Exception{
-        String sqlcommand = "select * from Client where id = ?";
+        System.out.println("Buscando cliente en DB");
+        
+        String sqlcommand = "select * from client where id_client = ?";
         PreparedStatement stm = Database.instance().prepareStatement(sqlcommand);
         stm.setString(1, id);
         ResultSet rs =  Database.instance().executeQuery(stm);           
         if (rs.next()) {
+            System.out.println("Cliente encontrado");
             return from(rs);
         }
         else{
+            System.out.println("Database: cliente no existe");
             throw new Exception ("Cliente no Existe");
         }
     }
@@ -54,10 +58,15 @@ public class ClientDao {
     public Client from (ResultSet rs){
         try {
             Client r= new Client();
-            r.setId(rs.getString("id"));
+            r.setId(rs.getString("id_client"));
             r.setNombre(rs.getString("nombre"));
+            
+            r.setPassword(rs.getString("password"));
+            r.setNickname(rs.getString("nickname"));
+            r.setIsonline(true);
             return r;
         } catch (SQLException ex) {
+            System.out.println("Database: Error creando cliente");
             return null;
         }
     }

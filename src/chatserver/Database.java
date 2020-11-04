@@ -6,21 +6,15 @@
 
 package chatserver;
 
-import chatprotocol.Client;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 /*
@@ -63,6 +57,8 @@ public class Database {
             String URL_conexion="jdbc:mysql://"+ server+":"+port+"/"+
                     database+"?user="+user+"&password="+password+"&serverTimezone=UTC";            
             Class.forName(driver).newInstance();
+            
+            System.out.println("Database: Database inicializada");
             return DriverManager.getConnection(URL_conexion);
         } catch (Exception e) {
             System.err.println(e.getMessage());

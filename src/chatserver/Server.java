@@ -33,18 +33,28 @@ public class Server {
         localService.setSever(this);
         boolean continuar = true;
         while (continuar) {
+            
             try {
+                System.out.println("try catch de clase Server");
                 Socket skt = srv.accept();
                 ObjectInputStream in = new ObjectInputStream(skt.getInputStream());
                 ObjectOutputStream out = new ObjectOutputStream(skt.getOutputStream() );
+                System.out.println("Socket aceptado");
                 try {
-                    int method = in.readInt(); // should be Protocol.LOGIN                    
-                    Client user=(Client)in.readObject();                          
+                    System.out.println("Recibiendo metodo");
+                    int method = in.readInt(); // should be Protocol.LOGIN  
+                    System.out.println("Server: Metodo recibido: " + Integer.toString(method));
+
+                    Client user=(Client)in.readObject();    
+                    System.out.println("Server: Cliente recibido: " + user.getId());
                     try {
                         user=Service.instance().login(user);
+                        System.out.println("Server: Cliente encontrado");
                         out.writeInt(Protocol.ERROR_NO_ERROR);
+                        System.out.println("Server: Enviado protocolo no error");
                         out.writeObject(user);
                         out.flush();
+                        System.out.println("Server: Objeto flusheado de vuelta");
                         Worker worker = new Worker(skt,in,out,user); 
                         workers.add(worker);                      
                         worker.start();                            
@@ -62,7 +72,7 @@ public class Server {
     
     public void deliver(String message,Client cl){
         for(Worker wk:workers){
-            if (wk.client == cl) {
+            if (wk.client.getId() == cl.getId()) {
                 wk.deliver(message);
             }
         }        

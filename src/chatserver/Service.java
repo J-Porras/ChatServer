@@ -53,10 +53,12 @@ public class Service implements IService{
     @Override
     public Client login(Client u) throws Exception {
         Client result = null;
+        System.out.println("Service server: Metodo login");
         result=clientDao.read(u.getId());
+        System.out.println("Resultado de la busqueda en la DB");
         if(result==null)  
             throw new Exception("User does not exist");
-        System.out.print("sirve");
+        System.out.print("encontro usuario no null");
         if(!result.getPassword().equals(u.getPassword()))
             throw new Exception("User does not exist");
         return result;
