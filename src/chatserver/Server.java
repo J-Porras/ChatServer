@@ -60,15 +60,17 @@ public class Server {
         }
     }
     
-    public void deliver(String message){
+    public void deliver(String message,Client cl){
         for(Worker wk:workers){
-          wk.deliver(message);
+            if (wk.client == cl) {
+                wk.deliver(message);
+            }
         }        
     } 
     
     public void remove(Client u){
         for(Worker wk:workers) {
-            if(wk.user.equals(u)){
+            if(wk.client.equals(u)){
                 workers.remove(wk);
                 try { wk.skt.close();} catch (IOException ex) {}
                 break;

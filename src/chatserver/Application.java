@@ -9,7 +9,7 @@ package chatserver;
  *
  * @author Porras
  */
-public class ChatServer {
+public class Application {
 
     /**
      * @param args the command line arguments

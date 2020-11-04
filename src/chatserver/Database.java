@@ -33,14 +33,17 @@ import java.util.Properties;
 //**************************
 public class Database {
     private static Database theInstance;
+    public static final String PROPERTIES_FILE_NAME="/db.properties";        
+    private Connection cnx;
+    
+    
     public static Database instance(){
         if (theInstance==null){ 
             theInstance=new Database();
         }
         return theInstance;
     }
-    public static final String PROPERTIES_FILE_NAME="/db.properties";        
-    Connection cnx;
+    
     public Database(){
         cnx=this.getConnection();            
     }

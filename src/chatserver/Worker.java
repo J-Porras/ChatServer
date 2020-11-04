@@ -13,13 +13,13 @@ public class Worker {
     Socket skt;
     ObjectInputStream in;
     ObjectOutputStream out;
-    Client user;
+    Client client;
 
     public Worker(Socket skt, ObjectInputStream in, ObjectOutputStream out, Client user) {
         this.skt=skt;
         this.in=in;
         this.out=out;
-        this.user=user;
+        this.client=user;
     }
 
     boolean continuar;    
@@ -48,19 +48,20 @@ public class Worker {
                 method = in.readInt();
                 switch(method){
                 //case Protocol.LOGIN: done on accept
-                case Protocol.LOGOUT:
-                    try {
-                        Service.instance().logout(user);
-                    } catch (Exception ex) {}
-                    stop();
-                    break;                 
-                case Protocol.MSG:
-                    String message=null;
-                    try {
-                        message = (String)in.readObject();
-                        Service.instance().post_msg(message,user.getDestino());
-                    } catch (ClassNotFoundException ex) {}
-                    break;                     
+                    case Protocol.LOGOUT:
+                        try {
+                            Service.instance().logout(client);
+                        } catch (Exception ex) {}
+                        stop();
+                        break; 
+                        
+                    case Protocol.MSG:
+                        String message=null;
+                        try {
+                            message = (String)in.readObject();
+                            Service.instance().post_msg(message,client.getDestino());
+                        } catch (ClassNotFoundException ex) {}
+                        break;                     
                 }
                 out.flush();
             } catch (IOException  ex) {
