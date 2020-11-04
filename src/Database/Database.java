@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package chatserver;
+package Database;
 
 import java.io.BufferedInputStream;
 import java.io.File;

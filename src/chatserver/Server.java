@@ -88,4 +88,24 @@ public class Server {
         }
     }
     
+    public void giveFriends(Client cl){
+        System.out.println("Server: Inside giveFriends ");
+        List<Client> friends = Collections.synchronizedList(new ArrayList<Client>());
+        for (int i = 0; i < cl.getFriends().size(); i++) {
+            for (int j = 0; j < this.workers.size(); j++) {
+                if (cl.getFriends().get(i).getId() == workers.get(i).client.getId()) {
+                    friends.add(workers.get(i).client);
+                    break;
+                }
+            }  
+        }
+        
+        for(Worker wk:workers){
+            if (wk.client.getId() == cl.getId()) {
+                wk.deliverFriends(friends);
+            }
+        } 
+        
+    }
+    
 }

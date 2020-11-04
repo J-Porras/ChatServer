@@ -1,6 +1,7 @@
 package chatserver;
 
 
+import Database.ClientDao;
 import chatprotocol.IService;
 import chatprotocol.Client;
 import java.util.HashMap;
@@ -23,10 +24,7 @@ public class Service implements IService{
 
     public Service() {        
         users =  new HashMap();
-        clientDao = new ClientDao();
-        //users.put("jperez", new User("jperez","111","Juan"));
-        //users.put("mreyes", new User("mreyes","222","Maria"));
-        //users.put("parias", new User("parias","333","Pedro"));                
+        clientDao = new ClientDao();               
     }
     
     public void setSever(Server srv){
@@ -37,15 +35,7 @@ public class Service implements IService{
         //srv.deliver(m);
         // TODO if the receiver is not active, store it temporarily
     }
-    
-    /*
-    public Client login(Client u) throws Exception{
-        Client result=users.get(u.getId());
-        if(result==null)  throw new Exception("User does not exist");
-        if(!result.getPassword().equals(u.getPassword()))throw new Exception("User does not exist");
-        return result;
-    } 
-*/
+
     public void logout(Client p) throws Exception{
         srv.remove(p);
     }    
@@ -54,11 +44,15 @@ public class Service implements IService{
     public Client login(Client u) throws Exception {
         Client result = null;
         System.out.println("Service server: Metodo login");
+        
         result=clientDao.read(u.getId());
         System.out.println("Resultado de la busqueda en la DB");
+        
         if(result==null)  
             throw new Exception("User does not exist");
+        
         System.out.print("encontro usuario no null");
+        
         if(!result.getPassword().equals(u.getPassword()))
             throw new Exception("User does not exist");
         return result;
@@ -75,7 +69,10 @@ public class Service implements IService{
     }
 
     @Override
-    public void giveClients() {
-      
+    public void giveClients(Client c) throws Exception {
+        System.out.println("Service: inside give Clients");
+        srv.giveFriends(c);
     }
+
+
 }

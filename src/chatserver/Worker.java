@@ -8,6 +8,9 @@ import java.io.ObjectOutputStream;
 import chatprotocol.IService;
 import chatprotocol.Client;
 import java.net.Socket;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Worker {
     Socket skt;
@@ -28,7 +31,11 @@ public class Worker {
             System.out.println("Worker atendiendo peticiones...");
             Thread t = new Thread(new Runnable(){
                 public void run(){
-                    listen();
+                    try {
+                        listen();
+                    } catch (Exception ex) {
+                        //Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
             continuar = true;
@@ -41,13 +48,15 @@ public class Worker {
         continuar=false;
     }
     
-    public void listen(){
+    public void listen() throws Exception{
         int method;
         while (continuar) {
             try {
+                System.out.println("Worker: Inside listen ");
                 method = in.readInt();
                 switch(method){
-                //case Protocol.LOGIN: done on accept
+                  
+                    //case Protocol.LOGIN: done on accept
                     case Protocol.LOGOUT:
                         try {
                             Service.instance().logout(client);
@@ -61,7 +70,19 @@ public class Worker {
                             message = (String)in.readObject();
                             Service.instance().post_msg(message,client.getDestino());
                         } catch (ClassNotFoundException ex) {}
-                        break;                     
+                        break;  
+                        
+                    case Protocol.REQ_USERS:
+                       
+                        try {
+                            System.out.println("case Protocol REQ_USERS ");
+                            Service.instance().giveClients(client);
+                        } 
+                        catch (Exception e) {
+                        }
+                        
+                    break;     
+                        
                 }
                 out.flush();
             } catch (IOException  ex) {
@@ -77,5 +98,15 @@ public class Worker {
             out.flush();
         } 
         catch (IOException ex) {}
+    }
+    
+    //on line friends
+    public void deliverFriends(List<Client> friends){
+        try {
+            out.writeInt(Protocol.ON_USERS);
+            out.writeObject(friends);
+            out.flush();
+        } catch (Exception e) {
+        }
     }
 }
