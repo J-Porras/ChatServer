@@ -74,5 +74,23 @@ public class Service implements IService{
         srv.giveFriends(c);
     }
 
+    @Override
+    public Client addFriend(Client client) throws Exception {
+        Client result = null;
+        
+        result=clientDao.read(client.getId());
+          
+        if(result==null)  
+            throw new Exception("User does not exist");
+        
+        
+        if(!result.getPassword().equals(client.getPassword()))
+            throw new Exception("User does not exist");
+        
+        return result;
+    }
+    
+    
+
 
 }

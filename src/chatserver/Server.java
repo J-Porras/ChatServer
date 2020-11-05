@@ -45,16 +45,20 @@ public class Server {
                     int method = in.readInt(); // should be Protocol.LOGIN  
                     System.out.println("Server: Metodo recibido: " + Integer.toString(method));
 
-                    Client user=(Client)in.readObject();    
+                    Client user=(Client)in.readObject();
+                    
                     System.out.println("Server: Cliente recibido: " + user.getId());
                     try {
                         user=Service.instance().login(user);
+                        
                         System.out.println("Server: Cliente encontrado");
                         out.writeInt(Protocol.ERROR_NO_ERROR);
+                        
                         System.out.println("Server: Enviado protocolo no error");
                         out.writeObject(user);
                         out.flush();
                         System.out.println("Server: Objeto flusheado de vuelta");
+                        
                         Worker worker = new Worker(skt,in,out,user); 
                         workers.add(worker);                      
                         worker.start();                            
@@ -94,8 +98,12 @@ public class Server {
         for (int i = 0; i < cl.getFriends().size(); i++) {
             for (int j = 0; j < this.workers.size(); j++) {
                 if (cl.getFriends().get(i).getId() == workers.get(i).client.getId()) {
-                    friends.add(workers.get(i).client);
+                    if (workers.get(i).client.getIsonline()) {
+                        friends.add(workers.get(i).client);
+                        
+                    }
                     break;
+                    
                 }
             }  
         }
@@ -107,5 +115,7 @@ public class Server {
         } 
         
     }
+    
+    
     
 }

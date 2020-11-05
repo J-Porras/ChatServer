@@ -75,13 +75,28 @@ public class Worker {
                     case Protocol.REQ_USERS:
                        
                         try {
+                            
                             System.out.println("case Protocol REQ_USERS ");
                             Service.instance().giveClients(client);
+                            
+                        } 
+                        catch (Exception e) {
+                        }
+                    break;   
+                    
+                    
+                    case Protocol.ADD_USER:
+                        try {
+                            
+                            Client newfriend = Service.instance().addFriend(client);
+                            out.writeInt(Protocol.ERROR_NO_ERROR);
+                            out.writeObject(newfriend);
+                            out.flush();
                         } 
                         catch (Exception e) {
                         }
                         
-                    break;     
+                    break;    
                         
                 }
                 out.flush();
@@ -109,4 +124,6 @@ public class Worker {
         } catch (Exception e) {
         }
     }
+    
+    
 }
