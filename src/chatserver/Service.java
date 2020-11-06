@@ -11,6 +11,11 @@ public class Service implements IService{
     private ClientDao clientDao;
     private static IService theInstance;
     
+
+        
+    Server srv;
+    Map<String,Client> users;
+
     
     public static IService instance(){
         if (theInstance==null){ 
@@ -18,9 +23,6 @@ public class Service implements IService{
         }
         return theInstance;
     }
-    
-    Server srv;
-    Map<String,Client> users;
 
     public Service() {        
         users =  new HashMap();
@@ -31,11 +33,6 @@ public class Service implements IService{
         this.srv=srv;
     }
     
-    public void post(String m){
-        //srv.deliver(m);
-        // TODO if the receiver is not active, store it temporarily
-    }
-
     public void logout(Client p) throws Exception{
         srv.remove(p);
     }    
@@ -64,8 +61,8 @@ public class Service implements IService{
     }
 
     @Override
-    public void post_msg(String m, Client client) {
-        srv.deliver(m,client);
+    public void post(String m,Client c) {
+        srv.deliver(m,c);
     }
 
     @Override
@@ -77,16 +74,14 @@ public class Service implements IService{
     @Override
     public Client addFriend(Client client) throws Exception {
         Client result = null;
-        
+        System.out.println("Leyendo cliente de database");
         result=clientDao.read(client.getId());
-          
+        System.out.println("Cliente leido");  
         if(result==null)  
             throw new Exception("User does not exist");
         
-        
-        if(!result.getPassword().equals(client.getPassword()))
-            throw new Exception("User does not exist");
-        
+      
+        System.out.println("Friend encontrado");
         return result;
     }
     

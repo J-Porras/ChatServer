@@ -65,10 +65,14 @@ public class Worker {
                         break; 
                         
                     case Protocol.MSG:
-                        String message=null;
+                        
                         try {
+                            String message=null;
                             message = (String)in.readObject();
-                            Service.instance().post_msg(message,client.getDestino());
+                            Client c = this.client.getDestino();
+                            this.client.addtoChat(c.getId(), message);
+                            
+
                         } catch (ClassNotFoundException ex) {}
                         break;  
                         
@@ -87,7 +91,7 @@ public class Worker {
                     
                     case Protocol.ADD_USER:
                         try {
-                            
+                            System.out.println("Worker: protocol add user");
                             Client newfriend = Service.instance().addFriend(client);
                             out.writeInt(Protocol.ERROR_NO_ERROR);
                             out.writeObject(newfriend);
