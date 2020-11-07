@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import chatprotocol.IService;
 import chatprotocol.Client;
+import chatprotocol.Mensaje;
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Level;
@@ -52,7 +53,6 @@ public class Worker {
         int method;
         while (continuar) {
             try {
-                System.out.println("Worker: Inside listen ");
                 method = in.readInt();
                 switch(method){
                   
@@ -67,10 +67,10 @@ public class Worker {
                     case Protocol.MSG:
                         
                         try {
-                            String message=null;
-                            message = (String)in.readObject();
-                            Client c = this.client.getDestino();
-                            this.client.addtoChat(c.getId(), message);
+
+                            Mensaje message = (Mensaje)in.readObject();
+                            
+                            Service.instance().post(message);
                             
 
                         } catch (ClassNotFoundException ex) {}
@@ -80,7 +80,6 @@ public class Worker {
                        
                         try {
                             
-                            System.out.println("case Protocol REQ_USERS ");
                             Service.instance().giveClients(client);
                             
                         } 
@@ -91,7 +90,7 @@ public class Worker {
                     
                     case Protocol.ADD_USER:
                         try {
-                            System.out.println("Worker: protocol add user");
+                            
                             Client newfriend = Service.instance().addFriend(client);
                             out.writeInt(Protocol.ERROR_NO_ERROR);
                             out.writeObject(newfriend);
@@ -109,16 +108,7 @@ public class Worker {
             }                        
         }
     }
-    
-    public void deliver(String message){
-        try {
-            out.writeInt(Protocol.DELIVER);
-            out.writeObject(message);
-            out.flush();
-        } 
-        catch (IOException ex) {}
-    }
-    
+
     //on line friends
     public void deliverFriends(List<Client> friends){
         try {
@@ -127,6 +117,15 @@ public class Worker {
             out.flush();
         } catch (Exception e) {
         }
+    }
+
+    void deliver(Mensaje msg) {
+        try {
+            out.writeInt(Protocol.DELIVER);
+            out.writeObject(msg);
+            out.flush();
+        } 
+        catch (IOException ex) {}
     }
     
     

@@ -6,6 +6,7 @@
 package chatserver;
 
 import chatprotocol.Client;
+import chatprotocol.Mensaje;
 import chatprotocol.Protocol;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -35,29 +36,26 @@ public class Server {
         while (continuar) {
             
             try {
-                System.out.println("try catch de clase Server");
                 Socket skt = srv.accept();
                 ObjectInputStream in = new ObjectInputStream(skt.getInputStream());
                 ObjectOutputStream out = new ObjectOutputStream(skt.getOutputStream() );
-                System.out.println("Socket aceptado");
                 try {
-                    System.out.println("Recibiendo metodo");
                     int method = in.readInt(); // should be Protocol.LOGIN  
-                    System.out.println("Server: Metodo recibido: " + Integer.toString(method));
+                
 
                     Client user=(Client)in.readObject();
                     
-                    System.out.println("Server: Cliente recibido: " + user.getId());
+   
                     try {
                         user=Service.instance().login(user);
                         
-                        System.out.println("Server: Cliente encontrado");
+                        
                         out.writeInt(Protocol.ERROR_NO_ERROR);
                         
-                        System.out.println("Server: Enviado protocolo no error");
+                        
                         out.writeObject(user);
                         out.flush();
-                        System.out.println("Server: Objeto flusheado de vuelta");
+                        
                         
                         Worker worker = new Worker(skt,in,out,user); 
                         workers.add(worker);                      
@@ -74,12 +72,16 @@ public class Server {
         }
     }
     
-    public void deliver(String message,Client cl){
-        for(Worker wk:workers){
-            if (wk.client.getId() == cl.getId()) {
-                wk.deliver(message);
+
+    
+    public void deliver(Mensaje msg){
+        
+        for (int i = 0; i < workers.size(); i++) {
+            if (workers.get(i).client.getId() == msg.getDestino().getId()) {
+                workers.get(i).deliver(msg);
+                break;
             }
-        }        
+        }
     } 
     
     public void remove(Client u){
@@ -93,7 +95,7 @@ public class Server {
     }
     
     public void giveFriends(Client cl){
-        System.out.println("Server: Inside giveFriends ");
+     
         List<Client> friends = Collections.synchronizedList(new ArrayList<Client>());
         for (int i = 0; i < cl.getFriends().size(); i++) {
             for (int j = 0; j < this.workers.size(); j++) {
