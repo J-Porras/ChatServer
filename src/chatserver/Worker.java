@@ -128,6 +128,7 @@ public class Worker {
             out.writeInt(Protocol.DELIVER);
             out.writeObject(msg);
             System.out.println("\nWorker: Mensaje enviado por out\n");
+        
             out.flush();
         } 
         catch (IOException ex) {}

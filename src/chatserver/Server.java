@@ -83,7 +83,7 @@ public class Server {
             if (workers.get(i).client.getNickname().equals(msg.getDestino().getNickname())) {
                 workers.get(i).deliver(msg);
                 System.out.println("\nworker encontrado y psasdo por deliver\n");
-                break;
+                return;
             }
         }
         System.out.println("\nWorker no encontrado\n");
