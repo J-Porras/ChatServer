@@ -67,13 +67,17 @@ public class Worker {
                     case Protocol.MSG:
                         
                         try {
+                           System.out.println("llego\n");
+                            Mensaje message = (Mensaje)in.readObject();//aqui esta el error // ya vengo sigue sin servir se loopea aqui
+                            //serializado
                             System.out.println("Worker: protocolo mensaje recibido\n");
-                            Mensaje message = (Mensaje)in.readObject();
                             System.out.println("\nWorker: mensaje parseado correctly\n");
                             Service.instance().post(message);
                             
 
-                        } catch (ClassNotFoundException ex) {}
+                        } catch (ClassNotFoundException ex) {
+                         System.out.println("Worker: protocolo mensaje no recibido\n");
+                        }
                         break;  
                         
                     case Protocol.REQ_USERS:
