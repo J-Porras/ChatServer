@@ -75,13 +75,15 @@ public class Server {
 
     
     public void deliver(Mensaje msg){
-        
+        System.out.println("\nSERVER: deliveando\n");
         for (int i = 0; i < workers.size(); i++) {
-            if (workers.get(i).client.getId() == msg.getDestino().getId()) {
+            if (workers.get(i).client.getNickname() == msg.getDestino().getNickname()) {
                 workers.get(i).deliver(msg);
+                System.out.println("\nworker encontrado y psasdo por deliver\n");
                 break;
             }
         }
+        System.out.println("\nWorker no encontrado\n");
     } 
     
     public void remove(Client u){

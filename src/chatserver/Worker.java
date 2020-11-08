@@ -67,9 +67,9 @@ public class Worker {
                     case Protocol.MSG:
                         
                         try {
-
+                            System.out.println("Worker: protocolo mensaje recibido\n");
                             Mensaje message = (Mensaje)in.readObject();
-                            
+                            System.out.println("\nWorker: mensaje parseado correctly\n");
                             Service.instance().post(message);
                             
 
@@ -123,6 +123,7 @@ public class Worker {
         try {
             out.writeInt(Protocol.DELIVER);
             out.writeObject(msg);
+            System.out.println("\nWorker: Mensaje enviado por out\n");
             out.flush();
         } 
         catch (IOException ex) {}

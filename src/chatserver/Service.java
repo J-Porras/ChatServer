@@ -59,6 +59,7 @@ public class Service implements IService{
 
     @Override
     public void post(Mensaje mensaje) {
+        System.out.println("\nEnviando al server...\n");
         srv.deliver(mensaje);
     }
 
