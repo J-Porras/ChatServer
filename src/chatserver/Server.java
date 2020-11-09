@@ -76,11 +76,11 @@ public class Server {
     
     public void deliver(Mensaje msg){
         System.out.println("\nSERVER: deliveando\n"); 
-       System.out.println("\ndestino =\n"+msg.getDestino().getNickname());
+       System.out.println("\ndestino =\n"+msg.getDestino());
         for (int i = 0; i < workers.size(); i++) {
            System.out.println("\npersona #\n"+ Integer.toString(i)+ workers.get(i).client.getNickname());
-           System.out.println("\ncomparando\n"+ Integer.toString(i)+ workers.get(i).client.getNickname()+"con "+msg.getDestino().getNickname());
-            if (workers.get(i).client.getNickname().equals(msg.getDestino().getNickname())) {
+           System.out.println("\ncomparando\n"+ Integer.toString(i)+ workers.get(i).client.getNickname()+"con "+msg.getDestino());
+            if (workers.get(i).client.getNickname().equals(msg.getDestino())) {
                 workers.get(i).deliver(msg);
                 System.out.println("\nworker encontrado y psasdo por deliver\n");
                 return;

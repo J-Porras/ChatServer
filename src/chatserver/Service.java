@@ -66,7 +66,7 @@ public class Service implements IService{
     @Override
     public void giveClients(Client c) throws Exception {
         
-        srv.giveFriends(c);
+       // srv.giveFriends(c);
     }
 
     @Override

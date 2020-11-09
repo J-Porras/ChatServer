@@ -117,7 +117,7 @@ public class Worker {
     public void deliverFriends(List<Client> friends){
         try {
             out.writeInt(Protocol.ON_USERS);
-            out.writeObject(friends);
+            out.writeObject(friends); 
             out.flush();
         } catch (Exception e) {
         }
